@@ -8,13 +8,13 @@ import PersonnelList from './components/PersonnelList';
 import AdminManagement from './components/AdminManagement';
 import UserAccount from './components/UserAccount';
 import LogsViewer from './components/LogsViewer';
-import { LayoutDashboard, Users, UserCog, LogOut, Menu, X, Shield, ChevronLeft, ChevronRight, FileClock } from 'lucide-react';
+import { LayoutDashboard, Users, UserCog, LogOut, Shield, ChevronLeft, ChevronRight, FileClock } from 'lucide-react';
 
 // --- INITIALIZE STORAGE ON LOAD ---
 initStorage();
 
 // --- SIDEBAR COMPONENT ---
-const Sidebar = ({ user, activeTab, onChangeTab, isOpen, onClose, isCollapsed, toggleCollapse }: any) => {
+const Sidebar = ({ user, activeTab, onChangeTab, isCollapsed, toggleCollapse }: any) => {
   // Define menus strictly by role
   const superAdminMenu = [
     { id: 'manage-users', label: 'Manage Users', icon: Shield },
@@ -30,76 +30,69 @@ const Sidebar = ({ user, activeTab, onChangeTab, isOpen, onClose, isCollapsed, t
   const menuItems = user.role === Role.SUPER_ADMIN ? superAdminMenu : adminMenu;
 
   return (
-    <div className={`fixed inset-y-0 left-0 z-40 bg-slate-950 text-slate-300 transform transition-all duration-300 ease-in-out 
-      ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
-      md:translate-x-0 border-r border-slate-800 
-      ${isCollapsed ? 'md:w-20' : 'md:w-64'}
+    <div className={`transition-all duration-300 ease-in-out bg-slate-950 text-slate-300 border-r border-slate-800 flex flex-col
+      ${isCollapsed ? 'w-20' : 'w-64'}
     `}>
-      <div className="flex flex-col h-full">
-        {/* Logo Area */}
-        <div className={`h-16 flex items-center px-4 bg-slate-950 border-b border-slate-800 ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-          {!isCollapsed && (
-            <div className="flex flex-col">
-              <div className="font-bold text-xl tracking-wider text-blue-500 whitespace-nowrap leading-none">
-                BJMP<span className="text-white">RO8</span>
-              </div>
-              <div className="text-[10px] text-slate-500 tracking-[0.3em] font-semibold mt-1">L.I.S.T</div>
-            </div>
-          )}
-          {isCollapsed && (
-             <div className="font-bold text-xl text-blue-500">B8</div>
-          )}
-          
-          {/* Mobile Close */}
-          <button onClick={onClose} className="md:hidden text-slate-400"><X /></button>
-          
-          {/* Desktop Toggle */}
-          <button onClick={toggleCollapse} className="hidden md:flex text-slate-500 hover:text-white transition-colors">
-            {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
-          </button>
-        </div>
-
-        {/* User Info */}
+      {/* Logo Area */}
+      <div className={`h-16 flex items-center px-4 bg-slate-950 border-b border-slate-800 ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
         {!isCollapsed && (
-            <div className="px-6 py-4 border-b border-slate-800 mb-2 bg-slate-900 overflow-hidden">
-                <p className="text-xs text-slate-500 uppercase tracking-wider">Welcome,</p>
-                <p className="font-semibold truncate text-slate-100">{user.rank} {user.lastName}</p>
-                <p className="text-xs text-blue-400 font-mono mt-1 uppercase border border-blue-900 inline-block px-1 rounded bg-blue-900/20">{user.role.replace('_', ' ')}</p>
+          <div className="flex flex-col">
+            <div className="font-bold text-xl tracking-wider text-blue-500 whitespace-nowrap leading-none">
+              BJMP<span className="text-white">RO8</span>
             </div>
+            <div className="text-[10px] text-slate-500 tracking-[0.3em] font-semibold mt-1">L.I.S.T</div>
+          </div>
         )}
+        {isCollapsed && (
+            <div className="font-bold text-xl text-blue-500">B8</div>
+        )}
+        
+        {/* Toggle Button */}
+        <button onClick={toggleCollapse} className="text-slate-500 hover:text-white transition-colors">
+          {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+        </button>
+      </div>
 
-        {/* Menu */}
-        <nav className="flex-1 px-3 space-y-1 mt-2 overflow-y-auto custom-scrollbar">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => { onChangeTab(item.id); onClose(); }}
-              title={isCollapsed ? item.label : ''}
-              className={`w-full flex items-center py-2.5 rounded-lg text-sm font-medium transition-all ${
-                isCollapsed ? 'justify-center px-0' : 'px-3'
-              } ${
-                activeTab === item.id 
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/50' 
-                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-              }`}
-            >
-              <item.icon className={`${isCollapsed ? 'mr-0' : 'mr-3'} h-5 w-5 min-w-[1.25rem]`} />
-              {!isCollapsed && <span className="truncate">{item.label}</span>}
-            </button>
-          ))}
-        </nav>
+      {/* User Info */}
+      {!isCollapsed && (
+          <div className="px-6 py-4 border-b border-slate-800 mb-2 bg-slate-900 overflow-hidden">
+              <p className="text-xs text-slate-500 uppercase tracking-wider">Welcome,</p>
+              <p className="font-semibold truncate text-slate-100">{user.rank} {user.lastName}</p>
+              <p className="text-xs text-blue-400 font-mono mt-1 uppercase border border-blue-900 inline-block px-1 rounded bg-blue-900/20">{user.role.replace('_', ' ')}</p>
+          </div>
+      )}
 
-        {/* Footer actions */}
-        <div className="p-4 border-t border-slate-800 space-y-2">
-            <button 
-                onClick={() => onChangeTab('logout')} 
-                title={isCollapsed ? 'Logout' : ''}
-                className={`w-full flex items-center py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-red-900/20 rounded-md transition-colors ${isCollapsed ? 'justify-center' : 'px-3'}`}
-            >
-                <LogOut className={`${isCollapsed ? 'mr-0' : 'mr-3'} h-5 w-5`} /> 
-                {!isCollapsed && "Logout"}
-            </button>
-        </div>
+      {/* Menu */}
+      <nav className="flex-1 px-3 space-y-1 mt-2 overflow-y-auto custom-scrollbar">
+        {menuItems.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => onChangeTab(item.id)}
+            title={isCollapsed ? item.label : ''}
+            className={`w-full flex items-center py-2.5 rounded-lg text-sm font-medium transition-all ${
+              isCollapsed ? 'justify-center px-0' : 'px-3'
+            } ${
+              activeTab === item.id 
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/50' 
+              : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+            }`}
+          >
+            <item.icon className={`${isCollapsed ? 'mr-0' : 'mr-3'} h-5 w-5 min-w-[1.25rem]`} />
+            {!isCollapsed && <span className="truncate">{item.label}</span>}
+          </button>
+        ))}
+      </nav>
+
+      {/* Footer actions */}
+      <div className="p-4 border-t border-slate-800 space-y-2">
+          <button 
+              onClick={() => onChangeTab('logout')} 
+              title={isCollapsed ? 'Logout' : ''}
+              className={`w-full flex items-center py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-red-900/20 rounded-md transition-colors ${isCollapsed ? 'justify-center' : 'px-3'}`}
+          >
+              <LogOut className={`${isCollapsed ? 'mr-0' : 'mr-3'} h-5 w-5`} /> 
+              {!isCollapsed && "Logout"}
+          </button>
       </div>
     </div>
   );
@@ -109,7 +102,6 @@ const Sidebar = ({ user, activeTab, onChangeTab, isOpen, onClose, isCollapsed, t
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   
   // App Data State
@@ -119,6 +111,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   // --- Effects ---
+
   useEffect(() => {
     const storedSession = localStorage.getItem('bjmp_session');
     if (storedSession) {
@@ -287,9 +280,12 @@ const App: React.FC = () => {
       refreshData();
   };
 
-
+  // --- RENDER GUARDS ---
+  
+  // 1. Loading
   if (loading) return <div className="flex h-screen items-center justify-center bg-slate-900 text-slate-400">Loading L.I.S.T...</div>;
 
+  // 2. Login Check
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
@@ -304,11 +300,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-slate-900 text-slate-100 overflow-hidden font-sans">
-        {/* Mobile Overlay */}
-        {sidebarOpen && (
-            <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />
-        )}
-
+        
         <Sidebar 
             user={user} 
             activeTab={activeTab} 
@@ -316,22 +308,17 @@ const App: React.FC = () => {
                 if(t === 'logout') handleLogout();
                 else setActiveTab(t);
             }} 
-            isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
             isCollapsed={isSidebarCollapsed}
             toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
 
         {/* Main Content */}
-        <div className={`flex-1 flex flex-col h-screen bg-slate-900 transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
+        <div className="flex-1 flex flex-col h-screen bg-slate-900">
             <header className="bg-slate-800 border-b border-slate-700 shadow-sm h-16 flex items-center justify-between px-6 z-20">
-                <button onClick={() => setSidebarOpen(true)} className="md:hidden text-slate-400">
-                    <Menu />
-                </button>
-                <h1 className="text-xl font-bold text-slate-100 ml-2 md:ml-0">
+                <h1 className="text-xl font-bold text-slate-100">
                     {title}
                 </h1>
-                <div className="hidden md:block text-sm text-slate-400">
+                <div className="text-sm text-slate-400">
                     {new Date().toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                 </div>
             </header>
