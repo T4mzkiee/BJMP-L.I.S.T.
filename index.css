@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    @apply bg-slate-950 text-slate-200;
+  }
+}
+
+/* Custom scrollbar for table containers */
+.custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
